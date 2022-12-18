@@ -1,0 +1,86 @@
+---
+title: "Visualización de datos aplicada"
+output:
+  github_document:
+    toc: true
+  cleanrmd::html_document_clean:
+    keep_md: yes
+    theme: new.css
+editor_options: 
+  chunk_output_type: console
+---
+
+<link rel="stylesheet" href="https://latex.now.sh/style.css">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Programa
+
+1.  Introducción a la programación con R.
+
+    - Ambiente de programación Rstudio.
+    - Proyectos y scripts.
+    - Creación, manipulación y asignación de objetos.
+    - Ejecutando código.
+
+1.  Análisis Exploratorio de datos.
+
+    - Visualización de datos con ggplot2: Mapeos estéticos, separación en facetas, geometrías.
+    - Transformación de datos: filtrar, ordenar, seleccionar, transformaciones, resúmenes agrupados y transformaciones agrupadas.
+    - Introducción al _Pipe_ `|>`.
+
+1.  Manipulación de datos.
+
+    - Datos relacionales: uniones (joins) de transformación y filtrado.
+    - Datos ordenados: pivotar, separar y unir, valores faltantes.
+    - Manejo de strings y expresiones regulares. Manipulación de factores y fechas.
+    - Importación y orígenes de información: texto plano, API, bases de datos, Web scraping.
+
+1.  Modelamiento.
+
+    - Conceptos básicos: predicción, error, sesgo, métricas de evaluación.
+    - Modelos de Regresión: Lineal y Logística.
+    - Árboles de decisión.
+    - Random Forests. Ideas tras Bagging y Boosting.
+    - Importancia de variables.
+    - Métodos no supervisados, métodos de clustering.
+
+
+## Slides
+
+```{r, results='asis'}
+slides_files <- dir("slides", full.names = TRUE)  |> 
+  stringr::str_subset(".html") |> 
+  stringr::str_subset("99", negate = TRUE)
+
+slides_url <- file.path(
+  "https://jbkunst.github.io",
+  "intro-elementos-ds",
+  slides_files
+  )
+
+slides_nms <- slides_files |> 
+  stringr::str_replace("html$", "Rmd") |> 
+  purrr::map(rmarkdown::yaml_front_matter) |> 
+  purrr::map(purrr::pluck, "subtitle") |> 
+  stringr::str_remove("^[0-9]+") |> 
+  # stringr::str_remove("\\.html$") |> 
+  stringr::str_replace_all("\\-", " ") |> 
+  stringr::str_trim()
+
+# n <-  "R Rstudio Copy Paste"
+# u <- "https://jbkunst.github.io/usach-ingemat-intro-elementos-ds-202201/01-R-Rstudio-copy-paste.html"
+
+purrr::walk2(slides_nms, slides_url, ~ {cat(stringr::str_glue("1. [{ n }]({ u })", n = .x, u = .y)); cat("\n")})
+```
+
+## Repositorio
+
+Repositorio del curso en github https://github.com/jbkunst/visualizacion-de-datos-aplicada. Acá podrás encontrar datos, scripts, código fuente de las slides, etc.
+
+## Bibliografía
+
+- [R para Ciencia de Datos](https://es.r4ds.hadley.nz/).
+- [R for Data Science](https://r4ds.hadley.nz/).

@@ -1,0 +1,45 @@
+---
+title: "Themed dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+# thematic::thematic_rmd()
+```
+
+Column {data-width=650 .tabset}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+plot(rnorm(1000), type = "l")
+```
+
+### Chart B
+
+```{r}
+library(highcharter)
+highcharts_demo()
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart C
+
+```{r}
+
+```
+
+### Chart D
+
+```{r}
+
+```
+

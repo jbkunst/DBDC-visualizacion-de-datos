@@ -2,6 +2,8 @@
 library(tidyverse)
 data("economics_long")
 
+economics_long
+
 economics_long <- economics_long |> 
   mutate(
     variable = case_when(
@@ -14,13 +16,15 @@ economics_long <- economics_long |>
     )
   )
 
+
+
 economics_long
 
 economics_long |> 
   distinct(variable)
 
 ggplot(economics_long) +
-  geom_line(aes(date, value, group = variable))
+  geom_line(aes(x = date, y = value, group = variable))
 # no tiene mucho sentido realizar esta comparación entre distintas
 # unidades de medida
 # tampoco queda claro cual es cada indicador
@@ -32,12 +36,20 @@ ggplot(economics_long) +
   geom_line(aes(date, value, group = variable, color = variable)) +
   facet_wrap(vars(variable), scales = "free_y")
 
+ggplot(
+  economics_long, 
+  aes(date, value, group = variable, color = variable)
+  ) +
+  geom_line() +
+  geom_smooth() + 
+  facet_wrap(vars(variable), scales = "free_y")
+
+
 # tipografía
 # colores
 library(showtext)
-font_add_google("Roboto")
+font_add_google("Oswald")
 showtext_auto()
-
 
 p <- ggplot(economics_long) +
   geom_line(aes(date, value, group = variable, color = variable)) +
@@ -55,7 +67,6 @@ library(plotly)
 
 ggplotly(p)
 
-
 library(highcharter)
 
 hc <- hchart(
@@ -70,9 +81,8 @@ hc |>
   hc_yAxis(max = 1, min = 0) |> 
   hc_navigator(enabled = TRUE) |> 
   hc_rangeSelector(enabled = TRUE) |> 
-  hc_add_theme(hc_theme_hcrt())
-
-  
+  hc_add_theme(hc_theme_hcrt()) |> 
+  hc_tooltip(table = TRUE, valueDecimals = 3)
 
 # dashboards --------------------------------------------------------------
 library(shiny)
@@ -137,8 +147,6 @@ server <- function(input, output, session) {
   
   observeEvent(input$serie, {
     
-    invalidateLater(1000)
-    
     data <- data()
     datos <-  data |>
       select(date, value) |>
@@ -158,7 +166,6 @@ server <- function(input, output, session) {
       hcpxy_update(subtitle = list(text = input$serie))
     
   })
-  
   
 }
 

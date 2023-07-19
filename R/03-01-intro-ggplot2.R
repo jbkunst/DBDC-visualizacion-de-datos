@@ -3,7 +3,7 @@
 # install.packages("ggplot2")
 # install.packages("datos")
 # install.packages("dplyr")
-
+# CTRL + SHIFT + F10, reinicia R.
 library(ggplot2) # lo principal
 library(datos)   # datos
 library(dplyr)   # manipulación datos
@@ -20,7 +20,7 @@ paises2
 
 
 # Estructura Componentes --------------------------------------------------
-# 
+#
 # - Data
 # - Esteticas
 # - Geometría
@@ -39,27 +39,31 @@ ggplot(
     aes(size = poblacion,
         color = continente
         )
-    ) + 
+    ) +
 
   facet_wrap(vars(continente)) +             # Facetas
-  
-  geom_smooth(method = "lm", se = FALSE)   + # Estadísticos 
-  
+
+  geom_smooth(method = "lm", se = FALSE) + # Estadísticos
+
   coord_cartesian() +                        # Coordenadas
   scale_x_log10(labels = scales::dollar) +
-  
+
   theme_minimal() +                          # Tema
   labs(
-    x = "PIB per cápita", 
+    x = "PIB per cápita",
     y = "Esperanza de vida"
     )
 
+qplot(paises2$pib_per_capita) +
+  scale_x_log10()
 
+theme_minimal()
 # Básico ------------------------------------------------------------------
 # Argumentos:
 log(x = 100, base = 10)
 log(100, 10)
-
+log(base = 10, 100)
+log(10, x = 100)
 
 ggplot(data = paises2) +
   geom_point(mapping = aes(x = pib_per_capita, y = esperanza_de_vida))
@@ -71,7 +75,11 @@ ggplot(paises2) +
 # fuera del `aes`
 ggplot(paises2) +
   geom_point(aes(pib_per_capita, esperanza_de_vida),
-             color = "blue", size = 4, shape = 3)
+             color = "blue", size = 4, shape = 6)
+
+ggplot(paises2) +
+  geom_point(aes(pib_per_capita, esperanza_de_vida,
+                 color = continente, size = poblacion, shape = continente))
 
 
 # Crear objetos/variables:
@@ -88,9 +96,9 @@ ggplot(paises2) +
 
 p <- ggplot(paises2) +
   geom_point(
-    aes(pib_per_capita, 
-        esperanza_de_vida, 
-        size = poblacion, 
+    aes(pib_per_capita,
+        esperanza_de_vida,
+        size = poblacion,
         color = continente
         )
     )
@@ -98,39 +106,52 @@ p <- ggplot(paises2) +
 p
 
 # Funcionalidades
-colores_continentes <- c(`África`   = "#442288",
-                         `Américas` = "#6ca2ea",
-                         Asia       = "#b5d33d", 
-                         Europe     = "#fed23f",
-                         `Oceanía`  = "#eb7d5b")
+# vectores nombrados
+x <- c(1, 2)
+sum(x)
+x
+
+x2 <- c(elemento1 = 1, elemento2 = 2, `elemento tres` = 3)
+sum(x2)
+x2
+
+colores_continentes <- c(África   = "#442288",
+                         Américas = "#6ca2ea",
+                         Asia     = "#b5d33d",
+                         Europa   = "#fed23f",
+                         Oceanía  = "#eb7d5b")
+colores_continentes
 
 p +
   scale_color_manual(values = colores_continentes)
 
+# paquete::funcion
+# no cargamos (library) el paquete scales, pero queremos
+# usar la funcion `dollar` del paquete.
+# (previamente instalad)
+# scales::dollar
+
 p <- p +
   scale_color_manual(values = colores_continentes) +
   scale_x_continuous(labels = scales::dollar) +
-  labs(x = "PIB per cápita", 
+  labs(x = "PIB per cápita",
        y = "Esperanza de vida",
        color = "Continente",
-       size = "Población",
+       size = "Leyenda de\nPoblación",
        title = "Título",
-       subtitle = "Subtítutlo",
+       subtitle = "Subtítulo",
        caption = "Caption"
        )
 
 p
 
-
 # Más funcionalidades
 p +
   scale_x_log10()
 
-
 p +
   scale_x_log10() +
   geom_smooth(aes(pib_per_capita, esperanza_de_vida), method = "lm")
-
 
 p2 <- p +
   scale_x_log10(labels = scales::dollar) +
@@ -141,5 +162,5 @@ p2 <- p +
 p2
 
 # guardar!
-ggsave(plot = p2, filename = "outputs/pib_per_capita.jpg", width = 16, height = 9, scale = 1/2)
+ggsave(plot = p2, filename = "pib_per_capita.svg", width = 16, height = 9, scale = 1/2)
 

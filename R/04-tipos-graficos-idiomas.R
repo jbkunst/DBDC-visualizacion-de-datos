@@ -28,21 +28,8 @@ ggplot(
 
 
 # Ejercicio 1 -------------------------------------------------------------
-# Cargue los paquetes datos, ggplot2 y dplyr.
-# Ejecute glimpse(vuelos).
-# Objtenga una muestra de 10.000 registros para responder las preguntas utilizando la funcion sample_n.
-# ¿Cuántos filas/columnas tienen los datos?
-# ¿Cuántos datos son numéricos?
-# Explore la relación entre distancia y tiempo_vuelo.
-# ¿Qué otras preguntas tienes? ¿Como podríamos obtener QUE vuelo es el más largos?
-# Reutiliza el código del ejemplo paso a paso para utilizar la función facet_wrap con estos datos.
-
-
-
-
-# Ejercicio 2 -------------------------------------------------------------
 # Con los datos de lego realice tipos de gráficos/idiomas revisados previamente:
-# - Scatterplot
+# - Scatterplot, que sucede?
 # - Barplots
 # - Line chart
 # - Dot Chart
@@ -53,15 +40,15 @@ legos <- read_csv(url_datos) |>
 
 
 
-# Ejercicio 3 -------------------------------------------------------------
-# Con los datos de pasies:
+# Ejercicio 2 -------------------------------------------------------------
+# penguins
 # - Stackedbarchart
 # - Steamgraph
 # - heatmap
 
 
-# Ejercicio 4 -------------------------------------------------------------
-# Con los datos mpg
+# Ejercicio 3 -------------------------------------------------------------
+# 
 library(palmerpenguins)
 penguins
 
@@ -72,9 +59,14 @@ penguins_completos <- penguins |>
 # scatterplot matrices
 library(ggforce) 
 
-ggplot(penguins_completos) +
-  geom_autopoint(aes(color = species)) +
-  facet_matrix(rows = vars(species:sex))
+penguins_completos |> 
+  select(where(is.numeric), species) |> 
+  select(-year) |> 
+  ggplot() +
+  geom_autopoint(aes(color = species), alpha = 0.6) +
+  facet_matrix(rows = vars(everything())) + 
+  scale_color_manual(values = c("#4f2d7f", "#f2ad4b", "#e22d36")) + 
+  theme(legend.position = "bottom")
 
 # Parallel Coordinate
 library(ggpcp)
@@ -84,11 +76,15 @@ penguins_completos |>
   select(species, where(is.numeric)) |> 
   pcp_select(everything())  |> 
   pcp_scale(method="uniminmax")  |> 
-  pcp_arrange() %>%
+  pcp_arrange() |> 
   ggplot(aes_pcp()) + 
+  # geom_smooth(aes(group = species, color = species)) +
   geom_pcp_axes() + 
-  geom_pcp(aes(colour = species))
+  geom_pcp(aes(colour = species)) +
+  theme(legend.position = "bottom") + 
+  scale_color_manual(values = c("#4f2d7f", "#f2ad4b", "#e22d36"))
 
+modrpley::ripley_col
 
 # value/pixel visualization
 library(visdat)

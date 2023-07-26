@@ -50,4 +50,178 @@ sequential("tomato", 10, what = "saturation", fun = "log")
 sequential("tomato", 10, what = "saturation", fun = "sqrt")
 
 
+# Brewer ------------------------------------------------------------------
+library(RColorBrewer)
+
+display.brewer.all()
+
+scales::show_col(brewer.pal(10, "BrBG"))
+
+scales::show_col(brewer.pal(name = "Set1", n = 9))
+
+# ggplot ------------------------------------------------------------------
+library(tidyverse)
+library(palmerpenguins)
+
+ggplot(penguins) +
+  geom_point(
+    aes(bill_length_mm, bill_depth_mm, color = species),
+    size = 3
+  ) 
+
+
+# mis defautls
+library(showtext)
+font_add_google("IBM Plex Sans", family = "ibm")
+showtext_auto()
+theme_set(theme_minimal())
+
+p <- ggplot(penguins) +
+  geom_point(
+    aes(bill_length_mm, bill_depth_mm, color = species),
+    size = 3
+    ) 
+
+p
+
+set.seed(596)
+diamin <- diamonds[sample(nrow(diamonds), 1000),]
+diamin <- diamin |> 
+  mutate(depth_est = depth - mean(depth))
+
+p2 <- ggplot(diamin, aes(carat, price)) +
+    geom_point(aes(colour = clarity), size = 2)
+
+p2
+
+# viridis -----------------------------------------------------------------
+p + scale_color_viridis_d()
+p + scale_color_viridis_d(option = "B")
+p + scale_color_viridis_d(option = "B", begin = 0.1, end = 0.9)
+
+p2
+p2 + scale_color_viridis_d(option = "B", begin = 0.1, end = 0.9)
+
+# brewer ------------------------------------------------------------------
+p + scale_color_brewer(palette = "Set1")
+
+p2
+
+# si es que claridad fuera SIN orden
+p2 + scale_color_brewer(palette = "Set1")
+
+
+
+# otros ggplot2 -----------------------------------------------------------
+# punto de referencia (promedio)
+p3 <- ggplot(diamin, aes(carat, price))  +
+  geom_point(aes(colour = depth_est), size = 2) 
+
+p3
+
+p3 +
+  scale_color_gradient2(low = "red", high = "blue", mid = "gray90")
+
+# otros ejemplos
+p3 + scale_color_viridis_c(n.breaks = 7)
+p3 + scale_color_viridis_b(n.breaks = 7)
+
+
+# :)
+p3 + scale_color_gradientn(colours = rainbow(100))
+
+
+# extensiones, un paso más ------------------------------------------------
+library(ggtext) 
+
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  geom_point(size = 3) +
+  scale_color_manual(
+    name = NULL,
+    values = c(setosa = "#0072B2", virginica = "#009E73", versicolor = "#D55E00"),
+    labels = c(
+      setosa = "<i style='color:#0072B2'>I. setosa</i>",
+      virginica = "<i style='color:#009E73'>I. virginica</i>",
+      versicolor = "<i style='color:#D55E00'>I. versicolor</i>")
+  ) +
+  labs(
+    title = "**Fisher's *Iris* dataset**  
+    <span style='font-size:11pt'>Sepal width vs. sepal length for 
+    <span style='color:#0072B2;'>setosa</span>, 
+    <span style='color:#D55E00;'>versicolor</span>, and
+    <span style='color:#009E73;'>virginica</span>
+    </span>",
+    x = "Sepal length (cm)", y = "Sepal width (cm)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_markdown(lineheight = 1.1),
+    legend.text = element_markdown(size = 11)
+  )
+
+
+
+# manual (ejemplo institución) --------------------------------------------
+colores <- c("#4f2d7f", "#f2ad4b", "#e22d36")
+
+p + scale_color_manual(values = colores)
+
+p3 + scale_color_gradientn(colors = colores)
+
+
+
+# ejemplo definir escalar propias -----------------------------------------
+# https://drsimonj.svbtle.com/creating-corporate-colour-palettes-for-ggplot2
+# https://rfortherestofus.com/2023/01/how-to-make-your-own-color-palettes-in-ggplot/
+ripley_pal <-
+  function(primary = "purple",
+           other = "red",
+           direction = 1) {
+    ripley_colors <- list(
+      `purple`     = "#4f2d7f",
+      `yellow`     = "#f2ad4b",
+      `red`        = "#e22d36",
+      `dark grey`  = "#4c4c4c",
+      `light grey` = "#E8E3E9"
+    )
+    
+    stopifnot(primary %in% names(ripley_colors))
+    
+    function(n) {
+      if (n > 5)
+        warning("Branded Color Palette only has 5 colors.")
+      
+      if (n == 2) {
+        other <- if (!other %in% names(ripley_colors)) {
+          other
+        } else {
+          ripley_colors[other]
+        }
+        color_list <- c(other, ripley_colors[primary])
+      } else {
+        color_list <- ripley_colors[1:n]
+      }
+      
+      color_list <- unname(unlist(color_list))
+      if (direction >= 0)
+        color_list
+      else
+        rev(color_list)
+    }
+  }
+
+scale_color_ripley_d <- function(primary = "purple", other = "red", direction = 1,...) {
+  ggplot2::discrete_scale(
+    "colour", "ripley",
+    ripley_pal(primary, other, direction),
+    ...
+  )
+}
+  
+
+p + scale_color_ripley_d()
+p + scale_color_ripley_d(direction = -1)
+  
+
+
 

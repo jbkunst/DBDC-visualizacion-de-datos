@@ -1,10 +1,10 @@
+# circulo de tonos --------------------------------------------------------
 # remotes::install_github("gastonstat/colortools")
 library(colortools)
 
 # https://www.canva.com/colors/color-wheel/
 # https://paletton.com/
 
-# circulo de tonos --------------------------------------------------------
 wheel("tomato")
 wheel("#47E3FF")
 
@@ -38,7 +38,6 @@ pizza(pals("cheer"))
 
 
 # ordenada ----------------------------------------------------------------
-
 sequential("tomato")
 
 sequential("tomato", 10)
@@ -70,7 +69,7 @@ ggplot(penguins) +
   ) 
 
 
-# mis defautls
+# mis defaults
 library(showtext)
 font_add_google("IBM Plex Sans", family = "ibm")
 showtext_auto()
@@ -85,25 +84,33 @@ p <- ggplot(penguins) +
 p
 
 set.seed(596)
-diamin <- diamonds[sample(nrow(diamonds), 1000),]
+diamin <- diamonds[sample(nrow(diamonds), 100),]
 diamin <- diamin |> 
-  mutate(depth_est = depth - mean(depth))
+  mutate(depth_est = depth - mean(depth)) |> 
+  arrange(desc(depth))
 
 p2 <- ggplot(diamin, aes(carat, price)) +
     geom_point(aes(colour = clarity), size = 2)
 
 p2
 
+# scale_color_*
+# scale_fill_*
+
 # viridis -----------------------------------------------------------------
+p
 p + scale_color_viridis_d()
 p + scale_color_viridis_d(option = "B")
-p + scale_color_viridis_d(option = "B", begin = 0.1, end = 0.9)
+p + scale_color_viridis_d(option = "B", begin = 0.2, end = 0.8)
 
 p2
-p2 + scale_color_viridis_d(option = "B", begin = 0.1, end = 0.9)
+p2 + scale_color_viridis_d(option = "B", begin = 0.2, end = 0.8)
+p2 + scale_color_viridis_d(option = "B")
 
 # brewer ------------------------------------------------------------------
+p
 p + scale_color_brewer(palette = "Set1")
+p + scale_color_brewer(palette = "Set3")
 
 p2
 
@@ -120,10 +127,14 @@ p3 <- ggplot(diamin, aes(carat, price))  +
 p3
 
 p3 +
-  scale_color_gradient2(low = "red", high = "blue", mid = "gray90")
+  scale_color_gradient2(low = "red", high = "blue", mid = "gray90", midpoint = 0)
+
+ggplot(diamin) +
+  geom_histogram(aes(depth_est))
 
 # otros ejemplos
-p3 + scale_color_viridis_c(n.breaks = 7)
+p3
+p3 + scale_color_viridis_c()
 p3 + scale_color_viridis_b(n.breaks = 7)
 
 
@@ -160,12 +171,21 @@ ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) +
   )
 
 
-
 # manual (ejemplo institución) --------------------------------------------
 colores <- c("#4f2d7f", "#f2ad4b", "#e22d36")
+colores
+
+p + 
+  scale_color_manual(values = colores) +
+  geom_smooth(aes(bill_length_mm, bill_depth_mm))
+
+colores <- c(Gentoo = "#4f2d7f", Adelie = "#f2ad4b",  Chinstrap  = "#e22d36")
+colores
 
 p + scale_color_manual(values = colores)
 
+
+p3
 p3 + scale_color_gradientn(colors = colores)
 
 
@@ -173,8 +193,7 @@ p3 + scale_color_gradientn(colors = colores)
 # ejemplo definir escalar propias -----------------------------------------
 # https://drsimonj.svbtle.com/creating-corporate-colour-palettes-for-ggplot2
 # https://rfortherestofus.com/2023/01/how-to-make-your-own-color-palettes-in-ggplot/
-ripley_pal <-
-  function(primary = "purple",
+ripley_pal <- function(primary = "purple",
            other = "red",
            direction = 1) {
     ripley_colors <- list(
@@ -218,10 +237,14 @@ scale_color_ripley_d <- function(primary = "purple", other = "red", direction = 
   )
 }
   
+geom_nueva_geometria
+geom_line
+
+
+p
+
+
 
 p + scale_color_ripley_d()
+
 p + scale_color_ripley_d(direction = -1)
-  
-
-
-

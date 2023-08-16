@@ -1,0 +1,27 @@
+---
+title: "Iris K-Means Clustering"
+format: 
+  html:
+    page-layout: custom
+---
+
+
+
+::: {.panel-sidebar}
+
+Hola
+
+:::
+
+::: {.panel-fill layout="[ [1], [1,1] ]"}
+
+```{r}
+#| panel: fill
+plot(ts(rnorm(10)))
+
+plot(ts(rnorm(10)))
+
+plot(ts(rnorm(10)))
+```
+
+:::

@@ -1,0 +1,55 @@
+---
+title: "Tamaño de los diamantes"
+author: "DBDC 2023!!"
+date: "2016-08-25"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+# diamantes2 <- filter(diamonds, carat <= 2.5)
+diamantes2 <- sample_n(diamonds, 100)
+
+mod <- lm(price ~ x + y + z + carat, data = diamantes2)
+```
+
+Existen `r nrow(diamantes2)` diamantes.  La **suma** de _quilates_ es:
+$$\sum quilate_i  = `r scales::comma(sum(diamantes2$carat))`$$
+Gráficamente:
+
+```{r, echo = FALSE, message=FALSE}
+ggplot(diamantes2, aes(carat)) + geom_histogram()
+```
+
+Acá algunos diamantes:
+
+```{r, echo=FALSE}
+knitr::kable(head(diamantes2, 5))
+```
+
+Los parámetros del modelo son:
+
+# Seccion 1
+
+```{r, echo = FALSE, warning=FALSE}
+library(broom)
+
+tidy(mod) |> 
+  mutate(estimate = scales::comma(estimate)) |> 
+  knitr::kable(align = "lrrrr")
+```
+
+# Seccion 2
+
+Otra seccion que muestra el gráfico.
+
+```{r, echo = FALSE}
+risk3r::gg_model_coef(mod)
+```
+
+

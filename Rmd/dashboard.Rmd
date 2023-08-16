@@ -1,0 +1,106 @@
+---
+title: "Dashboard DBDC"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    theme:
+      version: 4
+      primary: "#d80101"
+      base_font: 
+        google: Roboto
+      
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+source("ruta/parametros.R")
+
+r <- httr::GET("https://api.santa.cl/uf")
+r <- httr::content(r)
+uf <- as.numeric(r$uf)
+uf <- scales::comma(uf, prefix = "$")
+uf
+```
+
+# Seccion 1
+
+## {data-height=200}
+
+### 
+
+```{r}
+valueBox(
+  value = uf,
+  caption = "UF del día de hoy",
+  icon="fa-money",
+  color = "#77956a"
+)
+```
+
+### 
+
+```{r}
+gauge(8000, min = 5000, max = 10000)
+```
+
+### 
+
+### 
+
+## 
+
+### Grafico 1
+
+```{r}
+library(ggplot2)
+
+p <- ggplot(mtcars) +
+   geom_point(aes(mpg, cyl))
+
+library(plotly)
+
+ggplotly(p)
+```
+
+### Grafico 2
+
+```{r}
+library(rvest)  # descargar datos de paginas web
+url <- "https://www.sismologia.cl/sismicidad/catalogo/2023/08/20230802.html"
+
+datos <- read_html(url) |>
+  html_table() |>
+  dplyr::nth(2) |>
+  janitor::clean_names() |>
+  tidyr::separate(
+    latitud_longitud,
+    into = c("latitud", "longitud"),
+    sep = " ", convert = TRUE
+  ) |> 
+  mutate(mag = as.numeric(stringr::str_remove(magnitud_2, "Ml|Mw")))
+
+library(leaflet)
+
+leaflet(datos) |>
+  addTiles() |>
+  addMarkers(
+    lng = ~longitud,
+    lat = ~latitud,
+    popup = ~as.character(magnitud_2),
+    label = ~as.character(`fecha_local_lugar`)
+  ) |>
+  addProviderTiles("Esri.WorldImagery")
+```
+
+### Grafico 3
+
+```{r}
+knitr::kable(datos)
+```
+
+
+# Otra seccion
+

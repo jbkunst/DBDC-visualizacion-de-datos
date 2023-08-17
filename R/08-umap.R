@@ -47,7 +47,6 @@ p3
 
 p1 + p3 &  ggrepel::geom_text_repel(aes(label = id)) 
 
-
 p1 + coord_equal() 
 
 p3 + coord_equal()
